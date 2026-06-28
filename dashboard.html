@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>لوحة تحكم سوق العتبة</title>
+<meta name="description" content="لوحة تحكم سوق العتبة: متابعة المبيعات، الطلبات، المنتجات والموردين بسعر الجملة." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0B1B42;
+    --navy-deep: #071230;
+    --maroon: #6E1029;
+    --amber: #FF7A29;
+    --gold: #E8B33D;
+    --cream: #F7F1E6;
+    --cream-2: #EFE6D4;
+    --ink: #181522;
+    --paper: #FFFDF9;
+    --line: rgba(11,27,66,0.12);
+    --muted: #5a5468;
+    --green: #1FA971;
+    --red: #D8443B;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; background: var(--cream); }
+  body{
+    font-family: 'Cairo', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color:inherit; text-decoration:none; }
+  .display{ font-family:'Changa', sans-serif; font-weight:700; letter-spacing:.3px; }
+
+  /* ===== Shell ===== */
+  .shell{
+    display:grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar{
+    background: var(--navy);
+    color: rgba(255,255,255,0.8);
+    padding: 24px 18px;
+    position: sticky;
+    top:0;
+    height: 100vh;
+    display:flex;
+    flex-direction:column;
+    gap: 6px;
+    border-left: 1px solid rgba(255,255,255,0.06);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Changa',sans-serif;
+    font-weight:700;
+    font-size:1.3rem;
+    color:#fff;
+    padding: 6px 10px 22px;
+  }
+  .brand .dot{
+    width:10px; height:10px; border-radius:50%;
+    background: var(--amber);
+    box-shadow:0 0 10px var(--amber);
+  }
+  .nav-group-title{
+    font-family:'Tajawal',sans-serif;
+    font-size:.72rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 16px 12px 8px;
+  }
+  .side-link{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    font-size:.96rem;
+    color: rgba(255,255,255,0.78);
+    transition: background .18s ease, color .18s ease;
+  }
+  .side-link .ic{
+    width:22px; text-align:center; font-size:1.05rem; color: var(--gold);
+  }
+  .side-link:hover{ background: rgba(255,255,255,0.06); color:#fff; }
+  .side-link.active{
+    background: linear-gradient(90deg, rgba(255,122,41,0.22), rgba(255,122,41,0.04));
+    color:#fff;
+    box-shadow: inset 2px 0 0 var(--amber);
+  }
+  .side-foot{
+    margin-top:auto;
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .avatar{
+    width:40px;height:40px;border-radius:50%;
+    background: var(--maroon);
+    display:flex;align-items:center;justify-content:center;
+    color: var(--gold); font-weight:700; font-family:'Changa',sans-serif;
+  }
+  .side-foot b{ color:#fff; font-size:.92rem; display:block; }
+  .side-foot span{ font-size:.78rem; color: rgba(255,255,255,0.55); font-family:'Tajawal',sans-serif; }
+
+  /* ===== Main ===== */
+  .main{ display:flex; flex-direction:column; min-width:0; }
+  .topbar{
+    position: sticky; top:0; z-index:20;
+    background: var(--paper);
+    border-bottom:1px solid var(--line);
+    padding: 16px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .topbar h1{ font-size:1.4rem; color: var(--navy); }
+  .topbar .sub{ font-family:'Tajawal',sans-serif; font-size:.85rem; color: var(--muted); margin-top:2px; }
+  .top-actions{ display:flex; align-items:center; gap:12px; }
+  .search{
+    display:flex; align-items:center; gap:8px;
+    background: var(--cream); border:1px solid var(--line);
+    border-radius:12px; padding: 9px 14px; min-width: 240px;
+    color: var(--muted);
+  }
+  .search input{
+    border:none; background:transparent; outline:none;
+    font-family:'Cairo',sans-serif; font-size:.9rem; color: var(--ink); width:100%;
+  }
+  .btn-primary{
+    background: var(--amber); color:#1a0d00; font-weight:800;
+    padding: 11px 20px; border-radius:12px; font-size:.92rem;
+    border:none; cursor:pointer; white-space:nowrap;
+    box-shadow:0 12px 24px -12px rgba(255,122,41,0.6);
+  }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .icon-btn{
+    width:42px;height:42px;border-radius:12px;
+    background:var(--cream); border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer; position:relative; font-size:1.1rem; color:var(--navy);
+  }
+  .icon-btn .badge{
+    position:absolute; top:-4px; left:-4px;
+    background: var(--red); color:#fff; font-size:.62rem;
+    width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center; font-weight:700;
+  }
+
+  .content{ padding: 28px 30px 48px; }
+
+  /* ===== KPI cards ===== */
+  .kpi-grid{
+    display:grid; grid-template-columns: repeat(4,1fr); gap:18px;
+    margin-bottom: 24px;
+  }
+  .kpi-card{
+    background: var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding: 20px;
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  .kpi-card:hover{ transform: translateY(-3px); box-shadow:0 16px 28px -18px rgba(11,27,66,.28); }
+  .kpi-top{ display:flex; align-items:center; justify-content:space-between; }
+  .kpi-ic{
+    width:44px;height:44px;border-radius:12px;
+    background: var(--navy); color:var(--gold);
+    display:flex;align-items:center;justify-content:center; font-size:1.25rem;
+  }
+  .kpi-trend{ font-family:'Tajawal',sans-serif; font-size:.8rem; font-weight:500; padding:4px 10px; border-radius:20px; }
+  .trend-up{ color: var(--green); background: rgba(31,169,113,.12); }
+  .trend-down{ color: var(--red); background: rgba(216,68,59,.12); }
+  .kpi-card .num{ font-family:'Changa',sans-serif; font-size:1.9rem; color:var(--navy); margin-top:16px; }
+  .kpi-card .label{ font-family:'Tajawal',sans-serif; color:var(--muted); font-size:.9rem; margin-top:2px; }
+
+  /* ===== layout rows ===== */
+  .row{ display:grid; grid-template-columns: 1.6fr 1fr; gap:18px; margin-bottom:24px; }
+  .panel{
+    background: var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding: 22px;
+  }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .panel-head h3{ font-family:'Changa',sans-serif; font-size:1.15rem; color:var(--navy); }
+  .panel-head .link{ font-family:'Tajawal',sans-serif; font-size:.85rem; color:var(--amber); cursor:pointer; }
+  .pill-tabs{ display:flex; gap:6px; }
+  .pill{ font-family:'Tajawal',sans-serif; font-size:.8rem; padding:6px 14px; border-radius:20px; border:1px solid var(--line); color:var(--muted); cursor:pointer; }
+  .pill.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+
+  /* ===== Bar chart (CSS) ===== */
+  .chart{ display:flex; align-items:flex-end; gap:14px; height:240px; padding-top:10px; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:10px; height:100%; justify-content:flex-end; }
+  .bar{
+    width:60%; border-radius:8px 8px 0 0;
+    background: linear-gradient(180deg, var(--amber), var(--gold));
+    position:relative; transition: height .3s ease;
+    min-height:6px;
+  }
+  .bar:hover::after{
+    content: attr(data-val);
+    position:absolute; top:-26px; left:50%; transform:translateX(-50%);
+    background:var(--navy); color:#fff; font-size:.72rem; padding:3px 8px; border-radius:6px; white-space:nowrap;
+  }
+  .bar-col .m{ font-family:'Tajawal',sans-serif; font-size:.78rem; color:var(--muted); }
+
+  /* ===== Donut / categories ===== */
+  .cat-list{ display:flex; flex-direction:column; gap:16px; }
+  .cat-row .cat-top{ display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:6px; }
+  .cat-row .cat-top b{ color:var(--navy); font-weight:600; }
+  .cat-row .cat-top span{ color:var(--muted); font-family:'Tajawal',sans-serif; }
+  .track{ height:9px; background:var(--cream-2); border-radius:20px; overflow:hidden; }
+  .fill{ height:100%; border-radius:20px; }
+
+  /* ===== Table ===== */
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    text-align:right; font-family:'Tajawal',sans-serif; font-weight:500;
+    font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;
+    padding: 0 12px 14px; border-bottom:1px solid var(--line);
+  }
+  tbody td{ padding: 14px 12px; border-bottom:1px solid var(--line); font-size:.92rem; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: var(--cream); }
+  .ord-id{ font-family:'Changa',sans-serif; color:var(--navy); }
+  .cust{ display:flex; align-items:center; gap:10px; }
+  .cust .ci{ width:34px;height:34px;border-radius:50%; background:var(--cream-2); display:flex;align-items:center;justify-content:center; color:var(--maroon); font-weight:700; font-size:.82rem; }
+  .status{ font-family:'Tajawal',sans-serif; font-size:.8rem; padding:5px 12px; border-radius:20px; display:inline-block; }
+  .st-done{ color:var(--green); background:rgba(31,169,113,.12); }
+  .st-pending{ color:var(--gold); background:rgba(232,179,61,.15); }
+  .st-shipped{ color:var(--navy); background:rgba(11,27,66,.08); }
+  .st-cancel{ color:var(--red); background:rgba(216,68,59,.12); }
+  .price{ font-family:'Changa',sans-serif; color:var(--navy); }
+
+  /* ===== Top products ===== */
+  .prod{ display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .prod:last-child{ border-bottom:none; }
+  .prod .thumb{
+    width:48px;height:48px;border-radius:12px;
+    background: linear-gradient(135deg,var(--navy),var(--maroon));
+    display:flex;align-items:center;justify-content:center; color:var(--gold); font-size:1.2rem; flex-shrink:0;
+  }
+  .prod .pinfo{ flex:1; min-width:0; }
+  .prod .pinfo b{ color:var(--navy); font-size:.92rem; display:block; }
+  .prod .pinfo span{ font-family:'Tajawal',sans-serif; font-size:.78rem; color:var(--muted); }
+  .prod .psold{ font-family:'Changa',sans-serif; color:var(--navy); font-size:.95rem; text-align:left; }
+  .prod .psold span{ display:block; font-family:'Tajawal',sans-serif; font-size:.72rem; color:var(--muted); font-weight:400; }
+
+  /* ===== mobile ===== */
+  .menu-toggle{ display:none; }
+  @media (max-width: 1100px){
+    .kpi-grid{ grid-template-columns: repeat(2,1fr); }
+    .row{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 860px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{
+      position:fixed; right:0; top:0; width:260px; z-index:60;
+      transform: translateX(100%); transition: transform .25s ease;
+    }
+    .sidebar.open{ transform: translateX(0); }
+    .menu-toggle{ display:flex; }
+    .search{ display:none; }
+    .overlay{ position:fixed; inset:0; background:rgba(7,18,48,.5); z-index:55; display:none; }
+    .overlay.show{ display:block; }
+  }
+  @media (max-width: 520px){
+    .kpi-grid{ grid-template-columns: 1fr; }
+    .content{ padding: 20px 16px 40px; }
+    .topbar{ padding: 14px 16px; }
+    .table-scroll{ overflow-x:auto; }
+    table{ min-width: 560px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="dot"></span> سوق العتبة</div>
+
+    <div class="nav-group-title">الرئيسية</div>
+    <a class="side-link active" href="#"><span class="ic">▣</span> لوحة التحكم</a>
+    <a class="side-link" href="#"><span class="ic">📊</span> التحليلات</a>
+
+    <div class="nav-group-title">المتجر</div>
+    <a class="side-link" href="#"><span class="ic">🛍</span> الطلبات</a>
+    <a class="side-link" href="#"><span class="ic">📦</span> المنتجات</a>
+    <a class="side-link" href="#"><span class="ic">▤</span> الأقسام</a>
+    <a class="side-link" href="#"><span class="ic">🚚</span> الموردون</a>
+
+    <div class="nav-group-title">إدارة</div>
+    <a class="side-link" href="#"><span class="ic">👥</span> العملاء</a>
+    <a class="side-link" href="#"><span class="ic">↩</span> المرتجعات</a>
+    <a class="side-link" href="#"><span class="ic">⚙</span> الإعدادات</a>
+
+    <div class="side-foot">
+      <div class="avatar">م</div>
+      <div>
+        <b>مصطفى أحمد</b>
+        <span>مدير المتجر</span>
+      </div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-label="القائمة">☰</button>
+        <div>
+          <h1 class="display">لوحة التحكم</h1>
+          <div class="sub">أهلاً مصطفى، ده ملخص نشاط متجرك النهارده</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="search">
+          <span>⌕</span>
+          <input type="text" placeholder="ابحث عن طلب، منتج أو عميل…" aria-label="بحث">
+        </div>
+        <button class="icon-btn" aria-label="الإشعارات">🔔<span class="badge">3</span></button>
+        <button class="btn-primary">+ إضافة منتج</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- KPIs -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ic">💰</div>
+            <span class="kpi-trend trend-up">▲ 12.4%</span>
+          </div>
+          <div class="num">٨٤٬٢٠٠ ج</div>
+          <div class="label">إجمالي مبيعات الشهر</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ic">🛍</div>
+            <span class="kpi-trend trend-up">▲ 8.1%</span>
+          </div>
+          <div class="num">١٬٢٤٨</div>
+          <div class="label">عدد الطلبات</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ic">📦</div>
+            <span class="kpi-trend trend-down">▼ 2.3%</span>
+          </div>
+          <div class="num">٣٢٦</div>
+          <div class="label">منتجات نشطة</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ic">👥</div>
+            <span class="kpi-trend trend-up">▲ 5.7%</span>
+          </div>
+          <div class="num">٩٬٥٤٠</div>
+          <div class="label">عملاء مسجّلون</div>
+        </div>
+      </section>
+
+      <!-- Sales chart + categories -->
+      <section class="row">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>نظرة على المبيعات</h3>
+            <div class="pill-tabs">
+              <span class="pill">أسبوع</span>
+              <span class="pill active">شهر</span>
+              <span class="pill">سنة</span>
+            </div>
+          </div>
+          <div class="chart" id="chart">
+            <div class="bar-col"><div class="bar" data-val="٤٢ ألف" style="height:48%"></div><span class="m">يناير</span></div>
+            <div class="bar-col"><div class="bar" data-val="٥٨ ألف" style="height:66%"></div><span class="m">فبراير</span></div>
+            <div class="bar-col"><div class="bar" data-val="٣٦ ألف" style="height:41%"></div><span class="m">مارس</span></div>
+            <div class="bar-col"><div class="bar" data-val="٧٢ ألف" style="height:82%"></div><span class="m">أبريل</span></div>
+            <div class="bar-col"><div class="bar" data-val="٦١ ألف" style="height:70%"></div><span class="m">مايو</span></div>
+            <div class="bar-col"><div class="bar" data-val="٨٤ ألف" style="height:96%"></div><span class="m">يونيو</span></div>
+            <div class="bar-col"><div class="bar" data-val="٥٣ ألف" style="height:60%"></div><span class="m">يوليو</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>المبيعات حسب القسم</h3>
+            <span class="link">التفاصيل</span>
+          </div>
+          <div class="cat-list">
+            <div class="cat-row">
+              <div class="cat-top"><b>ملابس حريمي</b><span>٣٤٪</span></div>
+              <div class="track"><div class="fill" style="width:34%; background:var(--amber)"></div></div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-top"><b>ملابس رجالي</b><span>٢٦٪</span></div>
+              <div class="track"><div class="fill" style="width:26%; background:var(--gold)"></div></div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-top"><b>عطور ومستحضرات</b><span>١٨٪</span></div>
+              <div class="track"><div class="fill" style="width:18%; background:var(--maroon)"></div></div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-top"><b>حقائب وأحذية</b><span>١٤٪</span></div>
+              <div class="track"><div class="fill" style="width:14%; background:var(--navy)"></div></div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-top"><b>إكسسوارات</b><span>٨٪</span></div>
+              <div class="track"><div class="fill" style="width:8%; background:var(--green)"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Orders + top products -->
+      <section class="row">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>أحدث الطلبات</h3>
+            <span class="link">عرض الكل</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الطلب</th>
+                  <th>العميل</th>
+                  <th>القسم</th>
+                  <th>الحالة</th>
+                  <th>المبلغ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ord-id">#8842</td>
+                  <td><div class="cust"><span class="ci">س</span> سارة محمود</div></td>
+                  <td>ملابس حريمي</td>
+                  <td><span class="status st-done">مكتمل</span></td>
+                  <td class="price">١٬٢٤٠ ج</td>
+                </tr>
+                <tr>
+                  <td class="ord-id">#8841</td>
+                  <td><div class="cust"><span class="ci">أ</span> أحمد علي</div></td>
+                  <td>عطور</td>
+                  <td><span class="status st-shipped">تم الشحن</span></td>
+                  <td class="price">٦٨٠ ج</td>
+                </tr>
+                <tr>
+                  <td class="ord-id">#8840</td>
+                  <td><div class="cust"><span class="ci">م</span> منى خالد</div></td>
+                  <td>حقائب</td>
+                  <td><span class="status st-pending">قيد المراجعة</span></td>
+                  <td class="price">٤٥٠ ج</td>
+                </tr>
+                <tr>
+                  <td class="ord-id">#8839</td>
+                  <td><div class="cust"><span class="ci">ك</span> كريم فؤاد</div></td>
+                  <td>ملابس رجالي</td>
+                  <td><span class="status st-done">مكتمل</span></td>
+                  <td class="price">٢٬١٠٠ ج</td>
+                </tr>
+                <tr>
+                  <td class="ord-id">#8838</td>
+                  <td><div class="cust"><span class="ci">ن</span> نورا سمير</div></td>
+                  <td>إكسسوارات</td>
+                  <td><span class="status st-cancel">ملغي</span></td>
+                  <td class="price">٣٢٠ ج</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>الأكثر مبيعًا</h3>
+            <span class="link">المنتجات</span>
+          </div>
+          <div class="prod">
+            <div class="thumb">👗</div>
+            <div class="pinfo"><b>فستان كاجوال صيفي</b><span>كود: WM-204</span></div>
+            <div class="psold">٤٨٢<span>قطعة</span></div>
+          </div>
+          <div class="prod">
+            <div class="thumb">👜</div>
+            <div class="pinfo"><b>شنطة يد جلد</b><span>كود: BG-118</span></div>
+            <div class="psold">٣٩٦<span>قطعة</span></div>
+          </div>
+          <div class="prod">
+            <div class="thumb">🧴</div>
+            <div class="pinfo"><b>عطر شرقي فاخر</b><span>كود: PF-061</span></div>
+            <div class="psold">٣٤٠<span>قطعة</span></div>
+          </div>
+          <div class="prod">
+            <div class="thumb">👟</div>
+            <div class="pinfo"><b>حذاء رياضي رجالي</b><span>كود: SH-077</span></div>
+            <div class="psold">٢٨٥<span>قطعة</span></div>
+          </div>
+          <div class="prod">
+            <div class="thumb">👕</div>
+            <div class="pinfo"><b>قميص قطن رجالي</b><span>كود: MN-152</span></div>
+            <div class="psold">٢٦١<span>قطعة</span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // mobile sidebar
+  var toggle = document.getElementById('menuToggle');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  function closeMenu(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+  }
+  if(overlay){ overlay.addEventListener('click', closeMenu); }
+
+  // active sidebar link
+  document.querySelectorAll('.side-link').forEach(function(link){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      document.querySelectorAll('.side-link').forEach(function(l){ l.classList.remove('active'); });
+      link.classList.add('active');
+      closeMenu();
+    });
+  });
+
+  // chart period tabs
+  document.querySelectorAll('.pill').forEach(function(pill){
+    pill.addEventListener('click', function(){
+      document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
+      pill.classList.add('active');
+      document.querySelectorAll('#chart .bar').forEach(function(bar){
+        var h = Math.floor(Math.random()*70)+25;
+        bar.style.height = h + '%';
+      });
+    });
+  });
+</script>
+</body>
+</html>
